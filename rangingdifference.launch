@@ -1,0 +1,6 @@
+<launch>
+	<arg name="only"/> 
+    <node name="rangingdifference" output="screen" pkg="gtec_rostoa" type="rangingdifference">
+    <param name="paramOnly" type="string" value="$(arg only)"/>
+    </node>
+</launch>

@@ -1,0 +1,6 @@
+<launch>
+    <node name="pozyxfixer" output="screen" pkg="gtec_rostoa" type="pozyxfixer">
+    	<param name="numAnchors" type="int" value="6" />
+        <param name="cableLength" type="double" value="0.0" />
+    </node>
+</launch>

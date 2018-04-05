@@ -1,0 +1,6 @@
+<launch>
+    <node name="anchors" output="screen" pkg="gtec_rostoa" type="anchors">
+        <param name="configBeacons" textfile="$(find gtec_rostoa)/src/rostoa/config/config_beacons.xml">
+        </param>
+    </node>
+</launch>
