@@ -4,7 +4,7 @@
   <version>1.0.0</version>
   <description>The GTEC TOA package</description>
 
-  <maintainer email="valentin.barral@gtec.udc.es">Valentin Barral</maintainer>
+  <maintainer email="valentin.barral@udc.es">Valentin Barral</maintainer>
   <license>MIT</license>
 
   <build_depend>message_generation</build_depend> 
