@@ -54,6 +54,7 @@ private:
     bool useCustomBiasFix;
     int customBiasFixMode;
     double cableLength;
+    //TODO:
 };
 
 

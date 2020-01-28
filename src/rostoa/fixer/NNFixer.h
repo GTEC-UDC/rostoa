@@ -35,26 +35,26 @@ SOFTWARE.
 
 #include "ros/ros.h"
 #include <sstream>
-#include <gtec_msgs/PozyxRanging.h>
 #include <gtec_msgs/Ranging.h>
 
 #include "rtwtypes.h"
 #include "nnClassifier_types.h"
 
 
-class PozyxNNFixer
+class NNFixer
 {
 
 public:
-     PozyxNNFixer(ros::Publisher aPub, int mode, int numAnchors);
-    ~PozyxNNFixer();
+     NNFixer(ros::Publisher aPub, int mode, double minRange, double maxRange, double minRSS, double maxRSS);
+    ~NNFixer();
 
-    void newRanging(const gtec_msgs::PozyxRanging::ConstPtr& pozyx_ranging_msg);
+    void newRanging(const gtec_msgs::Ranging::ConstPtr& ranging_msg);
 
 private:
+	double normalize(double value, double min, double max);
     ros::Publisher ros_pub;
     int _mode;
-    int _numAnchors;
+    double _minRange, _maxRange, _minRSS, _maxRSS;
 };
 
 

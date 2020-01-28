@@ -22,26 +22,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "PozyxNNFixer.h"
+#include "NNFixer.h"
 #include <gtec_msgs/Ranging.h>
-#include <gtec_msgs/PozyxRanging.h>
 
 int main(int argc, char *argv[])
 {
 
 
-    ros::init(argc, argv, "pozyxnnfixer");
+    ros::init(argc, argv, "nnfixer");
     ros::NodeHandle n("~");
-    ros::Publisher aPublisher = n.advertise<gtec_msgs::Ranging>("/gtec/toa/ranging", 1000);
+    
 
     int mode = 0;
-    int numAnchors = -1;
-    n.getParam("mode", mode);
-    n.getParam("numAnchors", numAnchors);
+    double minRange, maxRange, minRSS, maxRSS;
 
-    PozyxNNFixer pozyxNNFixer(aPublisher, mode, numAnchors);
+    std::string topicRanging, topicOutputFixedRanging;
+
+    n.getParam("mode", mode);
+    n.getParam("topicRanging", topicRanging);
+    n.getParam("topicOutputFixedRanging", topicOutputFixedRanging);
+    n.getParam("minRange", minRange);
+    n.getParam("maxRange", maxRange);
+    n.getParam("minRSS", minRSS);
+    n.getParam("maxRSS", maxRSS);
+
+    ros::Publisher aPublisher = n.advertise<gtec_msgs::Ranging>(topicOutputFixedRanging.c_str(), 1000);
+
+    NNFixer nnFixer(aPublisher, mode, minRange, maxRange, minRSS, maxRSS);
     
-    ros::Subscriber sub0 = n.subscribe<gtec_msgs::PozyxRanging>("/gtec/uwb/ranging/pozyx", 12, &PozyxNNFixer::newRanging, &pozyxNNFixer);
+    ros::Subscriber sub0 =n.subscribe<gtec_msgs::Ranging>(topicRanging, 12, &NNFixer::newRanging, &nnFixer);
 
     ros::spin();
 

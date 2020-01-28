@@ -1,6 +1,11 @@
 <launch>
+	<arg default="/gtec/uwb/ranging/pozyx" name="topicRanging"></arg>
+	<arg default="/gtec/toa/ranging" name="topicOutputFixedRanging"></arg>
+
     <node name="pozyxfixer" output="screen" pkg="gtec_rostoa" type="pozyxfixer">
-    	<param name="numAnchors" type="int" value="6" />
+    	<param name="topicOutputFixedRanging" type="string" value="$(arg topicOutputFixedRanging)" />
+    	<param name="topicRanging" type="string" value="$(arg topicRanging)" />
+
         <param name="cableLength" type="double" value="0.0" />
     </node>
 </launch>

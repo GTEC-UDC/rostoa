@@ -78,12 +78,12 @@ set(SOURCE_FILES_POZYX_FIXER src/rostoa/publishers/node_pozyx_fixer.cpp
 set(SOURCE_FILES_RANGING_DIFFERENCE src/rostoa/publishers/node_ranging_diff.cpp
     src/rostoa/diff/RangingDifference.cpp)
 
-set(SOURCE_FILES_POZYX_NN_FIXER 
+set(SOURCE_FILES_NN_FIXER 
     src/rostoa/fixer/nn/nnClassifier.cpp
     src/rostoa/fixer/nn/nnClassifier_initialize.cpp
     src/rostoa/fixer/nn/nnClassifier_terminate.cpp
-    src/rostoa/publishers/node_pozyx_nn_fixer.cpp
-    src/rostoa/fixer/PozyxNNFixer.cpp)
+    src/rostoa/publishers/node_nn_fixer.cpp
+    src/rostoa/fixer/NNFixer.cpp)
 
 ## Declare a cpp executable
 
@@ -132,12 +132,12 @@ target_link_libraries(anchors
  )
 add_dependencies(anchors ${catkin_EXPORTED_TARGETS})
 
-add_executable(pozyxnnfixer ${SOURCE_FILES_POZYX_NN_FIXER})
-target_link_libraries(pozyxnnfixer
+add_executable(nnfixer ${SOURCE_FILES_NN_FIXER})
+target_link_libraries(nnfixer
    ${catkin_LIBRARIES}
  )
-add_dependencies(pozyxnnfixer ${catkin_EXPORTED_TARGETS})
-add_dependencies(pozyxnnfixer gtec_msgs_generate_messages_cpp)
+add_dependencies(nnfixer ${catkin_EXPORTED_TARGETS})
+add_dependencies(nnfixer gtec_msgs_generate_messages_cpp)
 
 
 

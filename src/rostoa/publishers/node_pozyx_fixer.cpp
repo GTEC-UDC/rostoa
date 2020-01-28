@@ -32,16 +32,22 @@ int main(int argc, char *argv[])
 
     ros::init(argc, argv, "pozyxfixer");
     ros::NodeHandle n("~");
-    ros::Publisher aPublisher = n.advertise<gtec_msgs::Ranging>("/gtec/toa/ranging", 1000);
+    
 
     double cableLength;
-    int numAnchors = -1;
-    n.getParam("cableLength", cableLength);
-    n.getParam("numAnchors", numAnchors);
+    std::string topicRanging,topicOutputFixedRanging;
 
-    PozyxFixer pozyxFixer(aPublisher, cableLength, numAnchors);
+    n.getParam("cableLength", cableLength);
+    n.getParam("topicRanging", topicRanging);
+    n.getParam("topicOutputFixedRanging", topicOutputFixedRanging);
+
+
+    ros::Publisher aPublisher = n.advertise<gtec_msgs::Ranging>(topicOutputFixedRanging, 1000);
+
+
+    PozyxFixer pozyxFixer(aPublisher, cableLength);
     
-    ros::Subscriber sub0 = n.subscribe<gtec_msgs::PozyxRanging>("/gtec/uwb/ranging/pozyx", 12, &PozyxFixer::newRanging, &pozyxFixer);
+    ros::Subscriber sub0 = n.subscribe<gtec_msgs::PozyxRanging>(topicRanging, 12, &PozyxFixer::newRanging, &pozyxFixer);
 
     ros::spin();
 

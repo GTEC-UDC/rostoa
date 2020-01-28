@@ -43,7 +43,7 @@ class PozyxFixer
 {
 
 public:
-     PozyxFixer(ros::Publisher aPub, double cableLength, int numAnchors);
+     PozyxFixer(ros::Publisher aPub, double cableLength);
     ~PozyxFixer();
 
     void newRanging(const gtec_msgs::PozyxRanging::ConstPtr& pozyx_ranging_msg);
@@ -51,7 +51,6 @@ public:
 private:
     ros::Publisher ros_pub;
     double cableLength;
-    int numAnchors;
 };
 
 

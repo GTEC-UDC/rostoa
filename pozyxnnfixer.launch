@@ -1,6 +1,0 @@
-<launch>
-    <node name="pozyxnnfixer" output="screen" pkg="gtec_rostoa" type="pozyxnnfixer">
-    	<param name="numAnchors" type="int" value="6" />
-        <param name="mode" type="int" value="1" />
-    </node>
-</launch>

@@ -24,10 +24,9 @@ SOFTWARE.
 #include "PozyxFixer.h"
 
 
-PozyxFixer::PozyxFixer(ros::Publisher aPub, double cableLength, int numAnchors) {
+PozyxFixer::PozyxFixer(ros::Publisher aPub, double cableLength) {
     this->cableLength = cableLength;
     this->ros_pub = aPub;
-    this->numAnchors = numAnchors;
 }
 
 PozyxFixer::~PozyxFixer() {
@@ -38,8 +37,6 @@ void PozyxFixer::newRanging(const gtec_msgs::PozyxRanging::ConstPtr& pozyx_rangi
 
     gtec_msgs::Ranging ranging;
     int raw_range;
-
-
 
     if ((pozyx_ranging_msg->originType == 0) && (pozyx_ranging_msg->destinationType == 1)) {
         //Origin es un tag
@@ -54,17 +51,14 @@ void PozyxFixer::newRanging(const gtec_msgs::PozyxRanging::ConstPtr& pozyx_rangi
     }
 
 
-    if (this->numAnchors == -1 || ranging.anchorId < this->numAnchors) {
+    ranging.range = pozyx_ranging_msg->range - (int)(this->cableLength * 1000);
+    ranging.seq = pozyx_ranging_msg->seq;
+    ranging.rss = pozyx_ranging_msg->rxPower;
 
-        ranging.range = pozyx_ranging_msg->range - (int)(this->cableLength * 1000);
-        ranging.seq = pozyx_ranging_msg->seq;
+    //TODO: hay que cambiar esto de alguna forma
+    ranging.errorEstimation = 0.00393973;
 
-        //TODO: hay que cambiar esto de alguna forma
-        ranging.errorEstimation = 0.00393973;
-
-        ros_pub.publish(ranging);
-        ROS_INFO("Pozyx Ranging Corrected:[AnchorId:%d, TagId:%d, Range:%d, ErrorEstimation:%f, SEQ:%d]", ranging.anchorId, ranging.tagId, ranging.range, ranging.errorEstimation, ranging.seq);
-
-    }
+    ros_pub.publish(ranging);
+        //ROS_INFO("Pozyx Ranging Corrected:[AnchorId:%d, TagId:%d, Range:%d, ErrorEstimation:%f, SEQ:%d]", ranging.anchorId, ranging.tagId, ranging.range, ranging.errorEstimation, ranging.seq);
 
 }
