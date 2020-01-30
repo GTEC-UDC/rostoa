@@ -2297,7 +2297,7 @@ boolean_T nnClassifier(double rss, double ranging)
       1.0);
   }
 
-  return 1.0 / (1.0 + std::exp(-(0.027907417939967993 + Xp1_idx_0))) > 0.8;
+  return 1.0 / (1.0 + std::exp(-(0.027907417939967993 + Xp1_idx_0))) < 0.5;
 }
 
 /* End of code generation (nnClassifier.cpp) */

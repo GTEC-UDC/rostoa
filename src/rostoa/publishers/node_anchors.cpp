@@ -40,11 +40,11 @@ int main(int argc, char *argv[])
 
   while (ros::ok())
   {
-
     anAnchorPublisher.publishAnchors();
     ros::spinOnce();
     loop_rate.sleep();
   }
+
 
   return 0;
 }

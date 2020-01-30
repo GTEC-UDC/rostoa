@@ -25,6 +25,9 @@ SOFTWARE.
 #include "nnClassifier.h"
 #include "nnClassifier_terminate.h"
 #include "nnClassifier_initialize.h"
+#include "nnMitigatorLOS.h"
+#include "nnMitigatorLOS_terminate.h"
+#include "nnMitigatorLOS_initialize.h"
 
 NNFixer::NNFixer(ros::Publisher aPub, int mode, double minRange, double maxRange, double minRSS, double maxRSS) {
     this->_mode = mode;
@@ -33,15 +36,21 @@ NNFixer::NNFixer(ros::Publisher aPub, int mode, double minRange, double maxRange
     this->_maxRange = maxRange;
     this->_minRSS = minRSS;
     this->_maxRSS = maxRSS;
-     nnClassifier_initialize();
+    nnClassifier_initialize();
+    nnMitigatorLOS_initialize();
 }
 
 NNFixer::~NNFixer() {
      nnClassifier_terminate();
+     nnMitigatorLOS_terminate();
 }
 
 double NNFixer::normalize(double value, double min, double max){
     return (value - min) / ( max - min );
+}
+
+double NNFixer::denormalize(double value, double min, double max){
+    return   value*(max-min)  + min;
 }
 
 void NNFixer::newRanging(const gtec_msgs::Ranging::ConstPtr& ranging_msg) {
@@ -63,10 +72,21 @@ void NNFixer::newRanging(const gtec_msgs::Ranging::ConstPtr& ranging_msg) {
         ros_pub.publish(outputRanging);
     } else if (_mode==1){
         //Ignore NLOS, NO mitigation
-        if (isLOS==0){
+        if (isLOS==1){
             ros_pub.publish(outputRanging);
         } else {
-            ROS_INFO("<<<<<<<Range ignored>>>>>>>>>>> AnchorId:%x", outputRanging.anchorId);
+            ROS_INFO("Ignored >>>>>> AnchorId:%x", outputRanging.anchorId);
+        }
+    } else if (_mode==2){
+        //Ignore and LOS mitigation
+        if (isLOS==1){
+
+            double rangeDiff = nnMitigatorLOS(rssNormalized, rangeNormalized);
+
+            outputRanging.range = (int) denormalize(rangeNormalized + rangeDiff,_minRange, _maxRange);
+            ros_pub.publish(outputRanging);
+        } else {
+            ROS_INFO("Ignored >>>>>> AnchorId:%x", outputRanging.anchorId);
         }
     }
     //ROS_INFO("Pozyx Ranging Corrected:[AnchorId:%x, TagId:%x, Range:%d, ErrorEstimation:%f, SEQ:%d, isLOS: %d]", outputRanging.anchorId, outputRanging.tagId, outputRanging.range, outputRanging.errorEstimation, outputRanging.seq, isLOS);

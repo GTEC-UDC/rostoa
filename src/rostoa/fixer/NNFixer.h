@@ -52,6 +52,7 @@ public:
 
 private:
 	double normalize(double value, double min, double max);
+	double denormalize(double value, double min, double max);
     ros::Publisher ros_pub;
     int _mode;
     double _minRange, _maxRange, _minRSS, _maxRSS;

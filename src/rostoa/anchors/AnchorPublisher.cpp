@@ -72,44 +72,60 @@ bool AnchorPublisher::init(std::string filenameBeacons) {
       }
     }
 
+    std::stringstream ssi;
+
+    ROS_INFO("Reading configuration file");
+     int index = 0;
+
+
     BOOST_FOREACH(const boost::property_tree::ptree::value_type & v, configTree.get_child("config")) {
 
       if (v.first.compare("anc") == 0) {
-        std::string attributeId = v.second.get<std::string>("<xmlattr>.ID", "");
-        //std::cout << "attributteId: " << attributeId << "\n";
-        bool ok = true;
-        int id;
-        if (attributeId.length() == 0) {
-          ok = false;
-        } else {
-          id = atoi(attributeId.c_str());
-        }
+        std::string idText = v.second.get<std::string>("<xmlattr>.ID", "");
 
-        if (ok) {
+        int id;
+        
+        ssi << std::hex << idText.c_str();
+        ssi >> id;
+
+        ssi.str("");
+        ssi.clear();
+
           //id &= 0x3;
          // _ancArray[id].id = id & 0xf;
-           _ancArray[id].id = id;
-          _ancArray[id].label = v.second.get<std::string>("<xmlattr>.label", "");
-          _ancArray[id].x = v.second.get<double>("<xmlattr>.x", 0.0);
-          _ancArray[id].y = v.second.get<double>("<xmlattr>.y", 0.0);
-          _ancArray[id].z = v.second.get<double>("<xmlattr>.z", 0.0);
+          _ancArray[index].id = id;
+          _ancArray[index].label = v.second.get<std::string>("<xmlattr>.label", "");
 
 
-          // std::cout << "Anchor " << id << ": (" << _ancArray[id].x << ", " << _ancArray[id].y <<
-          //           ", " << _ancArray[id].z << ")\n" << std::flush;
+          _ancArray[index].x = v.second.get<double>("<xmlattr>.x", 0.0);
+          _ancArray[index].y = v.second.get<double>("<xmlattr>.y", 0.0);
+          _ancArray[index].z = v.second.get<double>("<xmlattr>.z", 0.0);
+
+
+          std::cout << "Anchor " << id << ": (" << _ancArray[index].x << ", " << _ancArray[index].y <<", " << _ancArray[index].z << ")\n" << std::flush;
 
           //tag distance correction (in cm)
-          _ancArray[id].tagRangeCorection[0] = v.second.get<double>("<xmlattr>.t0", 0);
+/*          _ancArray[id].tagRangeCorection[0] = v.second.get<double>("<xmlattr>.t0", 0);
           _ancArray[id].tagRangeCorection[1] = v.second.get<double>("<xmlattr>.t1", 0);
           _ancArray[id].tagRangeCorection[2] = v.second.get<double>("<xmlattr>.t2", 0);
           _ancArray[id].tagRangeCorection[3] = v.second.get<double>("<xmlattr>.t3", 0);
           _ancArray[id].tagRangeCorection[4] = v.second.get<double>("<xmlattr>.t4", 0);
           _ancArray[id].tagRangeCorection[5] = v.second.get<double>("<xmlattr>.t5", 0);
           _ancArray[id].tagRangeCorection[6] = v.second.get<double>("<xmlattr>.t6", 0);
-          _ancArray[id].tagRangeCorection[7] = v.second.get<double>("<xmlattr>.t7", 0);
+          _ancArray[id].tagRangeCorection[7] = v.second.get<double>("<xmlattr>.t7", 0);*/
 
-        }
-        beacons.push_back({ id, { _ancArray[id].x, _ancArray[id].y, _ancArray[id].z } });
+
+          _ancArray[index].tagRangeCorection[0] = 0;
+          _ancArray[index].tagRangeCorection[1] = 0;
+          _ancArray[index].tagRangeCorection[2] = 0;
+          _ancArray[index].tagRangeCorection[3] = 0;
+          _ancArray[index].tagRangeCorection[4] = 0;
+          _ancArray[index].tagRangeCorection[5] = 0;
+          _ancArray[index].tagRangeCorection[6] = 0;
+          _ancArray[index].tagRangeCorection[7] = 0;
+
+        beacons.push_back({ id, { _ancArray[index].x, _ancArray[index].y, _ancArray[index].z } });
+        index+=1;
 
       }
     }
@@ -127,13 +143,12 @@ bool AnchorPublisher::init(std::string filenameBeacons) {
 
 void AnchorPublisher::publishAnchors() {
   visualization_msgs::MarkerArray markerArray;
-
   for (int i = 0; i < beacons.size(); ++i)
   {
     visualization_msgs::Marker marker;
     marker.header.frame_id = "world";
     marker.header.stamp = ros::Time();
-    marker.id = i;
+    marker.id = beacons[i].id;
     marker.type = visualization_msgs::Marker::CYLINDER;
     marker.action = visualization_msgs::Marker::ADD;
     marker.pose.position.x = beacons[i].position.x;

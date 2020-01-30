@@ -82,6 +82,10 @@ set(SOURCE_FILES_NN_FIXER
     src/rostoa/fixer/nn/nnClassifier.cpp
     src/rostoa/fixer/nn/nnClassifier_initialize.cpp
     src/rostoa/fixer/nn/nnClassifier_terminate.cpp
+    src/rostoa/fixer/nn/nnMitigatorLOS.cpp
+    src/rostoa/fixer/nn/nnMitigatorLOS_initialize.cpp
+    src/rostoa/fixer/nn/nnMitigatorLOS_terminate.cpp
+    src/rostoa/fixer/nn/repmat.cpp
     src/rostoa/publishers/node_nn_fixer.cpp
     src/rostoa/fixer/NNFixer.cpp)
 
