@@ -146,7 +146,7 @@ void AnchorPublisher::publishAnchors() {
   for (int i = 0; i < beacons.size(); ++i)
   {
     visualization_msgs::Marker marker;
-    marker.header.frame_id = "world";
+    marker.header.frame_id = "map";
     marker.header.stamp = ros::Time();
     marker.id = beacons[i].id;
     marker.type = visualization_msgs::Marker::CYLINDER;
